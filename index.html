@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>ZNAVAL - People Decide</title>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcDg5ksAAAAALw2m4UgX_WgN24UysR3cl4djG_K"></script>
+    <script>
+      function onClick(e) {
+        e.preventDefault();
+        grecaptcha.enterprise.ready(async () => {
+          const token = await grecaptcha.enterprise.execute('6LcDg5ksAAAAALw2m4UgX_WgN24UysR3cl4djG_K', {action: 'LOGIN'});
+          // Здесь можно добавить логику отправки токена на сервер
+          console.log('reCAPTCHA token:', token);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

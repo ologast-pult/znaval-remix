@@ -1,11 +1,22 @@
-<div align="center">
+# ZNAVAL - Архив Недвижимости
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Профессиональный инструмент для поиска и анализа недвижимости.
 
-  <h1>Built with AI Studio</h2>
+## Особенности
+- Интерактивная карта (Leaflet/OpenStreetMap).
+- Фильтрация по категориям, ценам и типам сделок.
+- Система отзывов и рейтингов.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## Технологии
+- **Frontend**: React 19, Vite, Tailwind CSS, Framer Motion.
+- **Deployment**: Подготовлено для Google Cloud Run.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
-
-</div>
+## Установка и запуск
+1. Установите зависимости:
+   ```bash
+   npm install
+   ```
+2. Запустите проект:
+   ```bash
+   npm run dev
+   ```
