@@ -5,24 +5,14 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCPY_M1LxneEdaUGv9641jnLrlp306FuQQ",
-  authDomain: "znaval.firebaseapp.com",
-  databaseURL: "https://znaval-default-rtdb.firebaseio.com",
-  projectId: "znaval",
-  storageBucket: "znaval.firebasestorage.app",
-  messagingSenderId: "960841075395",
-  appId: "1:960841075395:web:8a89613a53c73693f17076",
-  measurementId: "G-88NSVG3ENQ"
-};
+import firebaseConfig from '../firebase-applet-config.json';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 // Initialize Services
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const rtdb = getDatabase(app);
 export const storage = getStorage(app);
 
