@@ -36,7 +36,7 @@ const ToastItem: React.FC<{ toast: ToastMessage; onRemove: () => void }> = ({ to
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className={`flex items-center gap-3 px-4 py-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+      className={`flex items-center gap-3 px-4 py-3 border-2 border-black ${
         toast.type === 'success' ? 'bg-green-100' : 'bg-red-100'
       }`}
     >

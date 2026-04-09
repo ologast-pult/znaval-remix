@@ -26,7 +26,7 @@ export const LargeModal: React.FC<LargeModalProps> = ({ isOpen, onClose, title, 
             initial={{ opacity: 0, scale: 0.9, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 40 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-5xl max-h-[90vh] bg-paper-light border-4 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] z-[101] overflow-hidden flex flex-col"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-5xl max-h-[90vh] bg-paper-light border-4 border-black z-[101] overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b-2 border-black bg-white">

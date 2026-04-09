@@ -154,7 +154,7 @@ const RepresentativeModal: React.FC<RepresentativeModalProps> = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-4 bg-black text-white font-black uppercase tracking-widest text-xs hover:bg-[#dc2626] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          className="w-full py-4 bg-black text-white font-black uppercase tracking-widest text-xs hover:bg-[#7a1b1b] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {isSubmitting ? t('sending', 'Отправка...') : (
             <>

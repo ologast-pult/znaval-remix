@@ -11,7 +11,7 @@ import L from 'leaflet';
 // Custom icon for estate marker
 const estateIcon = new L.DivIcon({
   className: 'custom-leaflet-icon',
-  html: `<div style="background-color: black; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
+  html: `<div style="background-color: black; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
@@ -176,8 +176,8 @@ export const VotingSection: React.FC<VotingSectionProps> = ({
                 onClick={() => setSortBy(option.value as any)}
                 className={`px-3 py-1.5 text-[10px] font-black uppercase transition-all border border-black ${
                   sortBy === option.value 
-                    ? 'bg-[#dc2626] text-white' 
-                    : 'bg-white text-black hover:text-[#dc2626]'
+                    ? 'bg-[#7a1b1b] text-white' 
+                    : 'bg-white text-black hover:text-[#7a1b1b]'
                 }`}
               >
                 {option.label}
@@ -192,7 +192,7 @@ export const VotingSection: React.FC<VotingSectionProps> = ({
               setCityFilter('');
               setSortBy('rating_desc');
             }}
-            className="px-3 py-1.5 text-[10px] font-black uppercase transition-all border border-black bg-black text-white hover:bg-[#dc2626]"
+            className="px-3 py-1.5 text-[10px] font-black uppercase transition-all border border-black bg-black text-white hover:bg-[#7a1b1b]"
           >
             {t('reset_all', 'Сбросить все')}
           </button>
@@ -492,7 +492,7 @@ const EstateDetail = ({
           <button 
             onClick={onPrev}
             disabled={!hasPrev}
-            className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${!hasPrev ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] ${!hasPrev ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
           >
             <ChevronLeft size={14} />
             {t('back', 'Назад')}
@@ -501,7 +501,7 @@ const EstateDetail = ({
           <button 
             onClick={onNext}
             disabled={!hasNext}
-            className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${!hasNext ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] ${!hasNext ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
           >
             {t('forward', 'Вперед')}
             <ChevronRight size={14} />
@@ -513,25 +513,25 @@ const EstateDetail = ({
       <div className="flex gap-2 border-b-2 border-black pb-2 overflow-x-auto scrollbar-hide">
         <button 
           onClick={() => setActiveTab('overview')} 
-          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'overview' ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' : 'bg-white text-black border-2 border-black hover:text-[#dc2626] hover:border-[#dc2626]'}`}
+          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'overview' ? 'bg-[#7a1b1b] text-white' : 'bg-white text-black border-2 border-black hover:text-[#7a1b1b] hover:border-[#7a1b1b]'}`}
         >
           <LayoutDashboard size={14} /> {t('overview', 'Обзор')}
         </button>
         <button 
           onClick={() => setActiveTab('gallery')} 
-          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'gallery' ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' : 'bg-white text-black border-2 border-black hover:text-[#dc2626] hover:border-[#dc2626]'}`}
+          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'gallery' ? 'bg-[#7a1b1b] text-white' : 'bg-white text-black border-2 border-black hover:text-[#7a1b1b] hover:border-[#7a1b1b]'}`}
         >
           <ImageIcon size={14} /> {t('gallery', 'Галерея')}
         </button>
         <button 
           onClick={() => setActiveTab('plans')} 
-          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'plans' ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' : 'bg-white text-black border-2 border-black hover:text-[#dc2626] hover:border-[#dc2626]'}`}
+          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'plans' ? 'bg-[#7a1b1b] text-white' : 'bg-white text-black border-2 border-black hover:text-[#7a1b1b] hover:border-[#7a1b1b]'}`}
         >
           <MapIcon size={14} /> {t('plans_and_development', 'Планы и застройка')}
         </button>
         <button 
           onClick={() => setActiveTab('docs')} 
-          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'docs' ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' : 'bg-white text-black border-2 border-black hover:text-[#dc2626] hover:border-[#dc2626]'}`}
+          className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'docs' ? 'bg-[#7a1b1b] text-white' : 'bg-white text-black border-2 border-black hover:text-[#7a1b1b] hover:border-[#7a1b1b]'}`}
         >
           <FileText size={14} /> {t('documents', 'Документы')}
         </button>
@@ -542,7 +542,7 @@ const EstateDetail = ({
         <div className="flex flex-col gap-6 animate-in fade-in duration-300">
           <div className="aspect-video border-2 border-black overflow-hidden relative">
             <img src={estate.imageUrl} alt={estate.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            <div className="absolute top-4 right-4 bg-black text-white px-3 py-2 flex items-center gap-2 border-2 border-white/20 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]">
+            <div className="absolute top-4 right-4 bg-black text-white px-3 py-2 flex items-center gap-2 border-2 border-white/20">
               <Star size={16} className="fill-white" />
               <span className="text-xl font-black">{estate.averageRating.toFixed(1)}</span>
             </div>
@@ -619,7 +619,7 @@ const EstateDetail = ({
                       href={estate.websiteUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 py-3 bg-black text-white font-black uppercase tracking-widest text-[10px] hover:bg-[#dc2626] transition-all border-2 border-black"
+                      className="flex-1 flex items-center justify-center gap-2 py-3 bg-black text-white font-black uppercase tracking-widest text-[10px] hover:bg-[#7a1b1b] transition-all border-2 border-black"
                     >
                       <ExternalLink size={14} /> {t('go_to_official_website', 'Перейти на официальный сайт')}
                     </a>
@@ -679,7 +679,7 @@ const EstateDetail = ({
                     setIsLoginModalOpen?.(true);
                   }
                 }}
-                className="w-full py-3 bg-red-600 text-white border-2 border-black font-black uppercase tracking-widest text-[10px] hover:bg-[#7a1b1b] transition-all flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[inset_0_0_0_2px_#000] active:translate-x-[2px] active:translate-y-[2px]"
+                className="w-full py-3 bg-red-600 text-white border-2 border-black font-black uppercase tracking-widest text-[10px] hover:bg-[#7a1b1b] transition-all flex items-center justify-center gap-2 active:translate-x-[2px] active:translate-y-[2px]"
               >
                 <Star size={14} /> {t('leave_review', 'Оставить отзыв')}
               </button>
@@ -708,7 +708,7 @@ const EstateDetail = ({
                       href={`https://www.openstreetmap.org/?mlat=${estate.coordinates.lat}&mlon=${estate.coordinates.lng}#map=15/${estate.coordinates.lat}/${estate.coordinates.lng}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="absolute bottom-4 left-4 bg-white border-2 border-black px-3 py-2 text-[10px] font-black uppercase flex items-center gap-2 hover:bg-gray-100 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-[400]"
+                      className="absolute bottom-4 left-4 bg-white border-2 border-black px-3 py-2 text-[10px] font-black uppercase flex items-center gap-2 hover:bg-gray-100 transition-colors z-[400]"
                     >
                       <ExternalLink size={14} />
                       {t('open_in_osm', 'Открыть в OpenStreetMap')}
@@ -736,7 +736,7 @@ const EstateDetail = ({
               <button 
                 key={idx} 
                 onClick={() => setMainImage(url)} 
-                className={`aspect-square border-2 ${mainImage === url ? 'border-red-600' : 'border-black'} overflow-hidden bg-gray-100`}
+                className={`aspect-square border-2 ${mainImage === url ? 'border-[#7a1b1b]' : 'border-black'} overflow-hidden bg-gray-100`}
               >
                 <img src={url} alt={`Thumb ${idx}`} className="w-full h-full object-cover hover:opacity-80 transition-opacity" referrerPolicy="no-referrer" />
               </button>
@@ -761,7 +761,7 @@ const EstateDetail = ({
               <h4 className="text-lg font-black uppercase border-b-2 border-black pb-2">{t('floor_plans', 'Планы помещений')}</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {estate.floorPlans.map((plan, idx) => (
-                  <div key={idx} className="border-2 border-black bg-white p-2 flex flex-col gap-2 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow">
+                  <div key={idx} className="border-2 border-black bg-white p-2 flex flex-col gap-2">
                     <div className="aspect-square border border-black/10 overflow-hidden bg-gray-50 flex items-center justify-center p-4">
                       <img src={plan.imageUrl} alt={plan.title} className="max-w-full max-h-full object-contain" referrerPolicy="no-referrer" />
                     </div>
@@ -866,14 +866,14 @@ const EstateCard = ({ item, userVote, isCompared, onToggleCompare, onVote, onCli
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       onClick={onClick}
-      className="flex flex-col border-2 border-black bg-white group transition-all duration-300 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 cursor-pointer"
+      className="flex flex-col border-2 border-black bg-white group transition-all duration-300 hover:-translate-y-1 cursor-pointer"
     >
       <div className="aspect-[4/3] border-b-2 border-black overflow-hidden relative">
         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" referrerPolicy="no-referrer" />
         <div className="absolute top-2 left-2 flex flex-col gap-2 z-10">
           <button
             onClick={(e) => { e.stopPropagation(); onToggleCompare(); }}
-            className={`p-1.5 border border-white/20 transition-all ${isCompared ? 'bg-red-600 text-white' : 'bg-black text-white hover:bg-red-600'}`}
+            className={`p-1.5 border border-white/20 transition-all ${isCompared ? 'bg-[#7a1b1b] text-white' : 'bg-black text-white hover:bg-[#7a1b1b]'}`}
             title={isCompared ? t('remove_from_comparison', 'Удалить из сравнения') : t('add_to_comparison', 'Добавить к сравнению')}
           >
             <Scale size={14} />

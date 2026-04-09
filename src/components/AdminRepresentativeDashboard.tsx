@@ -21,7 +21,7 @@ const AdminRepresentativeDashboard: React.FC<AdminRepresentativeDashboardProps> 
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white border-4 border-black w-full max-w-4xl max-h-[90vh] flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+        className="bg-white border-4 border-black w-full max-w-4xl max-h-[90vh] flex flex-col"
       >
         <div className="p-4 border-b-4 border-black flex justify-between items-center bg-black text-white">
           <h2 className="text-xl font-black uppercase tracking-tighter flex items-center gap-2">

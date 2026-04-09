@@ -113,7 +113,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           <div className="absolute right-2 top-6 text-[10px] text-gray-500 font-bold uppercase">Загрузка...</div>
         )}
         {isOpen && results.length > 0 && (
-          <ul className="absolute z-50 w-full bg-white border border-black mt-1 max-h-48 overflow-y-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <ul className="absolute z-50 w-full bg-white border border-black mt-1 max-h-48 overflow-y-auto">
             {results.map((result, index) => (
               <li
                 key={index}
@@ -137,7 +137,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           <button
             type="button"
             onClick={() => setIsMapPickerOpen(true)}
-            className="flex-1 flex items-center justify-center gap-2 border-2 border-black p-2 bg-white hover:bg-gray-50 transition-all text-[10px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+            className="flex-1 flex items-center justify-center gap-2 border-2 border-black p-2 bg-white hover:bg-gray-50 transition-all text-[10px] font-black uppercase active:translate-x-[1px] active:translate-y-[1px]"
           >
             <MapPin size={14} />
             {lat && lng ? `Выбрано: ${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}` : 'Указать на карте'}
@@ -173,7 +173,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
             <button
               type="button"
               onClick={() => setIsMapPickerOpen(false)}
-              className="w-full bg-black text-white border-2 border-black p-2 text-[10px] font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-800"
+              className="w-full bg-black text-white border-2 border-black p-2 text-[10px] font-black uppercase hover:bg-gray-800"
             >
               Подтвердить координаты
             </button>

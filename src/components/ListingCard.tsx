@@ -47,7 +47,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
               e.stopPropagation();
               onToggleComparison(listing.id);
             }}
-            className={`absolute top-1 right-1 p-1 border border-black transition-all ${isInComparison ? 'bg-[#dc2626] text-white' : 'bg-white text-black hover:text-[#dc2626] hover:border-[#dc2626]'}`}
+            className={`absolute top-1 right-1 p-1 border border-black transition-all ${isInComparison ? 'bg-[#7a1b1b] text-white' : 'bg-white text-black hover:text-[#7a1b1b] hover:border-[#7a1b1b]'}`}
             title={isInComparison ? "Удалить из сравнения" : "Добавить в сравнение"}
           >
             <ArrowUpDown size={10} />
@@ -68,7 +68,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             {formatPrice(listing.price, listing.transactionType === 'Аренда' ? 'Kč/мес' : 'Kč')}
           </span>
           {(listing.dispozice || listing.area) && (
-            <span className="text-[10px] font-black uppercase text-[#dc2626]">
+            <span className="text-[10px] font-black uppercase text-[#7a1b1b]">
               {listing.dispozice}{listing.dispozice && listing.area ? ' / ' : ''}{listing.area ? `${listing.area} м²` : ''}
             </span>
           )}

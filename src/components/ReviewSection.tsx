@@ -18,7 +18,7 @@ export const ReviewCard: React.FC<{ review: Review; onExpand: (review: Review) =
   const { t } = useTranslation();
   return (
     <div 
-      className="border border-black p-3 bg-white flex flex-col h-full transition-all hover:shadow-lg cursor-pointer group"
+      className="border border-black p-3 bg-white flex flex-col h-full transition-all cursor-pointer group"
       onClick={() => onExpand(review)}
     >
       <div className="flex items-center justify-between mb-3">
@@ -116,7 +116,7 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ reviews, rating, o
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
           <button 
             onClick={onLeaveReview}
-            className="flex items-center gap-1.5 bg-red-600 text-white px-3 py-1.5 text-[9px] font-black uppercase tracking-widest hover:bg-[#7a1b1b] transition-all border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[inset_0_0_0_2px_#000] active:translate-x-[2px] active:translate-y-[2px] shrink-0"
+            className="flex items-center gap-1.5 bg-red-600 text-white px-3 py-1.5 text-[9px] font-black uppercase tracking-widest hover:bg-[#7a1b1b] transition-all border-2 border-black active:translate-x-[2px] active:translate-y-[2px] shrink-0"
           >
             <Edit3 size={12} />
             {t('leave_review', 'Оставить отзыв')}
@@ -124,25 +124,25 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ reviews, rating, o
           <div className="flex items-center gap-0.5 border border-black p-0.5 bg-white shrink-0">
             <button 
               onClick={() => setSortBy('newest')}
-              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'newest' ? 'bg-[#dc2626] text-white' : 'text-black hover:bg-[#dc2626] hover:text-white'}`}
+              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'newest' ? 'bg-[#7a1b1b] text-white' : 'text-black hover:bg-[#7a1b1b] hover:text-white'}`}
             >
               {t('newest', 'Новые')}
             </button>
             <button 
               onClick={() => setSortBy('oldest')}
-              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'oldest' ? 'bg-[#dc2626] text-white' : 'text-black hover:bg-[#dc2626] hover:text-white'}`}
+              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'oldest' ? 'bg-[#7a1b1b] text-white' : 'text-black hover:bg-[#7a1b1b] hover:text-white'}`}
             >
               {t('oldest', 'Старые')}
             </button>
             <button 
               onClick={() => setSortBy('best')}
-              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'best' ? 'bg-[#dc2626] text-white' : 'text-black hover:bg-[#dc2626] hover:text-white'}`}
+              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'best' ? 'bg-[#7a1b1b] text-white' : 'text-black hover:bg-[#7a1b1b] hover:text-white'}`}
             >
               {t('best', 'Лучшие')}
             </button>
             <button 
               onClick={() => setSortBy('worst')}
-              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'worst' ? 'bg-[#dc2626] text-white' : 'text-black hover:bg-[#dc2626] hover:text-white'}`}
+              className={`px-2 py-0.5 text-[9px] font-black uppercase transition-all ${sortBy === 'worst' ? 'bg-[#7a1b1b] text-white' : 'text-black hover:bg-[#7a1b1b] hover:text-white'}`}
             >
               {t('worst', 'Худшие')}
             </button>

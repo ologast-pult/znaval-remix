@@ -19,7 +19,7 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onVote, onAction }) =>
   };
 
   return (
-    <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col h-full relative overflow-hidden group">
+    <div className="bg-white border-2 border-black p-4 flex flex-col h-full relative overflow-hidden group">
       {/* Newspaper Header Style */}
       <div className="flex justify-between items-start mb-3 border-b border-black/10 pb-2">
         <span className="text-[8px] font-black uppercase tracking-widest bg-black text-white px-1.5 py-0.5">

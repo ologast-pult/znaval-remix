@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen flex items-center justify-center bg-paper-light p-4">
-          <div className="max-w-md w-full bg-white border-4 border-black p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+          <div className="max-w-md w-full bg-white border-4 border-black p-8">
             <h2 className="text-2xl font-black uppercase mb-4 border-b-4 border-black pb-2">Ошибка Архива</h2>
             <p className="text-sm font-bold uppercase mb-6 opacity-70">
               {errorMessage}

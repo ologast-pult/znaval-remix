@@ -196,7 +196,7 @@ export const ListingDetail: React.FC<ListingDetailProps> = ({
               <div className="text-xl font-black uppercase tracking-tighter">
                 <button 
                   onClick={() => onFilterCategory?.('Голосование')}
-                  className={`px-2 py-0.5 border-2 border-black bg-white text-black transition-all hover:text-[#dc2626] hover:border-[#dc2626] active:bg-[#dc2626] active:text-white active:border-[#dc2626]`}
+                  className={`px-2 py-0.5 border-2 border-black bg-white text-black transition-all hover:text-[#7a1b1b] hover:border-[#7a1b1b] active:bg-[#7a1b1b] active:text-white active:border-[#7a1b1b]`}
                 >
                   {listing.title}
                 </button>
@@ -211,7 +211,7 @@ export const ListingDetail: React.FC<ListingDetailProps> = ({
                   {formatPrice(listing.price, listing.transactionType === 'Аренда' ? t('czk_month', 'Kč/мес') : 'Kč')}
                 </div>
                 {(listing.dispozice || listing.area) && (
-                  <div className="text-lg font-black uppercase text-[#dc2626] border-l-2 border-black pl-2 flex items-center gap-2">
+                  <div className="text-lg font-black uppercase text-[#7a1b1b] border-l-2 border-black pl-2 flex items-center gap-2">
                     <span>
                       {listing.dispozice}{listing.dispozice && listing.area ? ' / ' : ''}{listing.area ? `${listing.area} ${t('sqm', 'м²')}` : ''}
                     </span>
@@ -227,7 +227,7 @@ export const ListingDetail: React.FC<ListingDetailProps> = ({
             {onToggleComparison && (
               <button 
                 onClick={() => onToggleComparison(listing.id)}
-                className={`w-full py-3 border-2 border-black text-[11px] font-black uppercase transition-all active:translate-x-1 active:translate-y-1 ${isInComparison ? 'bg-[#dc2626] text-white' : 'bg-white text-black hover:bg-gray-50'}`}
+                className={`w-full py-3 border-2 border-black text-[11px] font-black uppercase transition-all active:translate-x-1 active:translate-y-1 ${isInComparison ? 'bg-[#7a1b1b] text-white' : 'bg-white text-black hover:bg-gray-50'}`}
               >
                 {isInComparison ? t('remove_from_compare', 'Удалить из сравнения') : t('add_to_compare', 'Добавить к сравнению')}
               </button>
@@ -426,7 +426,7 @@ export const ListingDetail: React.FC<ListingDetailProps> = ({
             <button className="flex items-center justify-center gap-2 py-3 bg-[#7a1b1b] text-white font-black uppercase tracking-widest text-[10px] hover:bg-red-700 transition-all border-2 border-black">
               <Phone size={14} /> {t('show_phone', 'Показать телефон')}
             </button>
-            <button className="flex items-center justify-center gap-2 py-3 border-2 border-black font-black uppercase tracking-widest text-[10px] bg-white text-black hover:text-[#dc2626] hover:border-[#dc2626] transition-all">
+            <button className="flex items-center justify-center gap-2 py-3 border-2 border-black font-black uppercase tracking-widest text-[10px] bg-white text-black hover:text-[#7a1b1b] hover:border-[#7a1b1b] transition-all">
               <MessageSquare size={14} /> {t('write_message', 'Написать')}
             </button>
             <button 
@@ -437,7 +437,7 @@ export const ListingDetail: React.FC<ListingDetailProps> = ({
                   setIsLoginModalOpen(true);
                 }
               }}
-              className="col-span-2 flex items-center justify-center gap-2 bg-red-600 text-white border-2 border-black px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#7a1b1b] transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[inset_0_0_0_2px_#000] active:translate-x-[2px] active:translate-y-[2px]"
+              className="col-span-2 flex items-center justify-center gap-2 bg-red-600 text-white border-2 border-black px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#7a1b1b] transition-all active:translate-x-[2px] active:translate-y-[2px]"
             >
               <Star size={14} /> {t('leave_review', 'Оставить отзыв')}
             </button>

@@ -26,7 +26,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ rating, onRate, interact
             size={18}
             className={`${
               star <= (hover || rating)
-                ? 'fill-[#dc2626] text-[#dc2626]'
+                ? 'fill-[#7a1b1b] text-[#7a1b1b]'
                 : 'text-gray-300'
             }`}
           />

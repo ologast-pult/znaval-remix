@@ -10,7 +10,7 @@ export const Contacts: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="max-w-4xl mx-auto p-6 bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] my-8"
+      className="max-w-4xl mx-auto p-6 bg-white border-2 border-black my-8"
     >
       <div className="flex items-center justify-between mb-8 border-b-2 border-black pb-4">
         <div className="flex items-center gap-3">
@@ -19,7 +19,7 @@ export const Contacts: React.FC = () => {
         </div>
         <button 
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 px-4 py-2 border-2 border-black font-bold uppercase text-xs hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1"
+          className="flex items-center gap-2 px-4 py-2 border-2 border-black font-bold uppercase text-xs hover:bg-black hover:text-white transition-all active:translate-x-1 active:translate-y-1"
         >
           <ArrowLeft size={16} />
           Назад
@@ -34,7 +34,7 @@ export const Contacts: React.FC = () => {
           </p>
 
           <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 border-2 border-black bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <div className="flex items-start gap-4 p-4 border-2 border-black bg-gray-50">
               <Mail className="text-[#7a1b1b] shrink-0" size={24} />
               <div>
                 <h3 className="font-bold uppercase text-sm">Электронная почта</h3>
@@ -42,7 +42,7 @@ export const Contacts: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 border-2 border-black bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <div className="flex items-start gap-4 p-4 border-2 border-black bg-gray-50">
               <Phone className="text-[#7a1b1b] shrink-0" size={24} />
               <div>
                 <h3 className="font-bold uppercase text-sm">Телефон</h3>
@@ -50,7 +50,7 @@ export const Contacts: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 border-2 border-black bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <div className="flex items-start gap-4 p-4 border-2 border-black bg-gray-50">
               <MapPin className="text-[#7a1b1b] shrink-0" size={24} />
               <div>
                 <h3 className="font-bold uppercase text-sm">Адрес</h3>
@@ -63,17 +63,17 @@ export const Contacts: React.FC = () => {
         <div className="space-y-6">
           <h2 className="text-xl font-bold text-black uppercase mb-4">Социальные сети</h2>
           <div className="grid grid-cols-2 gap-4">
-            <a href="#" className="flex flex-col items-center justify-center p-6 border-2 border-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1">
+            <a href="#" className="flex flex-col items-center justify-center p-6 border-2 border-black hover:bg-black hover:text-white transition-all active:translate-x-1 active:translate-y-1">
               <Globe size={32} className="mb-2" />
               <span className="font-bold uppercase text-[10px]">Website</span>
             </a>
-            <a href="#" className="flex flex-col items-center justify-center p-6 border-2 border-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1">
+            <a href="#" className="flex flex-col items-center justify-center p-6 border-2 border-black hover:bg-black hover:text-white transition-all active:translate-x-1 active:translate-y-1">
               <MessageSquare size={32} className="mb-2" />
               <span className="font-bold uppercase text-[10px]">Telegram</span>
             </a>
           </div>
 
-          <div className="p-6 border-2 border-black bg-[#7a1b1b] text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <div className="p-6 border-2 border-black bg-[#7a1b1b] text-white">
             <h3 className="font-bold uppercase mb-2">Режим работы</h3>
             <p className="text-sm opacity-90">
               Понедельник — Пятница: 10:00 – 19:00<br />

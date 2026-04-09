@@ -5,7 +5,7 @@ export const formatPrice = (price: number, currency: string = 'Kč') => {
   
   return (
     <span className="font-black tracking-tighter">
-      <span className="text-[#dc2626]">{parts[0]}</span>
+      <span className="text-[#7a1b1b]">{parts[0]}</span>
       {parts.length > 1 && (
         <span> {parts.slice(1).join(" ")}</span>
       )}

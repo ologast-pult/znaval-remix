@@ -1,10 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CATEGORIES, PROPERTY_TYPES } from './constants';
 import { ListingCard } from './components/ListingCard';
 import { ListingDetail } from './components/ListingDetail';
 import { VotingSection } from './components/VotingSection';
 import { PollCard } from './components/PollCard';
-import { SearchIcon, ShieldCheck, MapPin, Globe, Building, Info, ArrowLeft, ArrowRight, Search, LayoutGrid, Map as MapIcon, ArrowUpDown, Home, LogOut, LogIn, Building2, ChevronLeft, ChevronRight, X, Users, Plus, Settings } from 'lucide-react';
+import { SearchIcon, ShieldCheck, MapPin, Globe, Building, Info, ArrowLeft, ArrowRight, Search, LayoutGrid, Map as MapIcon, ArrowUpDown, Home, LogOut, LogIn, Building2, ChevronLeft, ChevronRight, X, Users, Plus, Settings, ChevronDown } from 'lucide-react';
 import { ReviewModal } from './components/ReviewModal';
 import AdminRepresentativeDashboard from './components/AdminRepresentativeDashboard';
 import { Modal } from './components/Modal';
@@ -35,7 +35,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 // Custom icons for map markers
 const ownerIcon = new L.DivIcon({
   className: 'custom-leaflet-icon',
-  html: `<div style="background-color: #10b981; width: 32px; height: 32px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
+  html: `<div style="background-color: #10b981; width: 32px; height: 32px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
@@ -43,7 +43,7 @@ const ownerIcon = new L.DivIcon({
 
 const realtorIcon = new L.DivIcon({
   className: 'custom-leaflet-icon',
-  html: `<div style="background-color: #3b82f6; width: 32px; height: 32px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
+  html: `<div style="background-color: #3b82f6; width: 32px; height: 32px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
@@ -51,7 +51,7 @@ const realtorIcon = new L.DivIcon({
 
 const znavalIcon = new L.DivIcon({
   className: 'custom-leaflet-icon',
-  html: `<div style="background-color: #f59e0b; width: 32px; height: 32px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
+  html: `<div style="background-color: #f59e0b; width: 32px; height: 32px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
@@ -64,19 +64,69 @@ import { auth, db, handleFirestoreError, OperationType } from './firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { doc, setDoc, getDoc, getDocFromServer, collection, getDocs, writeBatch } from 'firebase/firestore';
 
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfUse } from './components/TermsOfUse';
 import { Contacts } from './components/Contacts';
 
+function RootRedirect() {
+  const { i18n } = useTranslation();
+  const location = useLocation();
+  
+  // Get detected language or fallback to 'en'
+  const detectedLang = i18n.language ? i18n.language.split('-')[0] : 'en';
+  const supportedLangs = ['en', 'cs', 'ru'];
+  const lang = supportedLangs.includes(detectedLang) ? detectedLang : 'en';
+  
+  return <Navigate to={`/${lang}${location.pathname}${location.search}`} replace />;
+}
+
 export default function App() {
+  return (
+    <Routes>
+      <Route path="/:lang/*" element={<AppContent />} />
+      <Route path="*" element={<RootRedirect />} />
+    </Routes>
+  );
+}
+
+function AppContent() {
+  const { lang } = useParams();
   const { t, i18n } = useTranslation();
   const { user, isAuthReady } = useFirebase();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (lang && ['en', 'cs', 'ru'].includes(lang) && i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang, i18n]);
   
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'ru' ? 'cs' : 'ru';
-    i18n.changeLanguage(newLang);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setIsLangMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  const changeLanguage = (newLang: string) => {
+    const langs = ['en', 'cs', 'ru'];
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    if (pathParts.length > 0 && langs.includes(pathParts[0])) {
+      pathParts[0] = newLang;
+    } else {
+      pathParts.unshift(newLang);
+    }
+    
+    navigate('/' + pathParts.join('/') + location.search);
+    setIsLangMenuOpen(false);
   };
   
   const [listings, setListings] = useState<Listing[]>([]);
@@ -521,7 +571,7 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto bg-paper-light min-h-screen border-x border-black shadow-2xl relative flex flex-col">
+    <div className="max-w-[1200px] mx-auto bg-paper-light min-h-screen border-x border-black relative flex flex-col">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       
       {/* Top Header - Compact Style */}
@@ -578,7 +628,7 @@ export default function App() {
           <div className="flex items-center gap-1 border-2 border-black p-1 bg-gray-50">
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-1.5 flex items-center gap-1 transition-all ${viewMode === 'list' ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' : 'text-black hover:text-[#dc2626]'}`}
+              className={`p-1.5 flex items-center gap-1 transition-all ${viewMode === 'list' ? 'bg-[#7a1b1b] text-white' : 'text-black hover:text-[#7a1b1b]'}`}
               title="Список"
             >
               <LayoutGrid size={16} />
@@ -586,7 +636,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setViewMode('map')}
-              className={`p-1.5 flex items-center gap-1 transition-all ${viewMode === 'map' ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' : 'text-black hover:text-[#dc2626]'}`}
+              className={`p-1.5 flex items-center gap-1 transition-all ${viewMode === 'map' ? 'bg-[#7a1b1b] text-white' : 'text-black hover:text-[#7a1b1b]'}`}
               title="Карта"
             >
               <MapIcon size={16} />
@@ -594,41 +644,82 @@ export default function App() {
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={toggleLanguage}
-              className="px-2 py-1 border-2 border-black text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px]"
-              title="Сменить язык / Změnit jazyk"
-            >
-              {i18n.language === 'ru' ? 'CS' : 'RU'}
-            </button>
+            {/* Language Switcher */}
+            <div className="flex items-center gap-2 relative" ref={langMenuRef}>
+              <button 
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className={`px-3 py-1.5 border-2 border-black text-[10px] font-black uppercase transition-all flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px] ${
+                  isLangMenuOpen ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-50'
+                }`}
+                title="Change language"
+              >
+                <span className="flex items-center gap-1.5">
+                  {i18n.language.split('-')[0].toUpperCase()}
+                </span>
+                <ChevronDown size={12} className={`transition-transform duration-200 ${isLangMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isLangMenuOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
+                    className="absolute top-full right-0 mt-2 bg-white border-2 border-black z-50 min-w-[140px] overflow-hidden"
+                  >
+                    {[
+                      { code: 'en', label: 'English' },
+                      { code: 'cs', label: 'Čeština' },
+                      { code: 'ru', label: 'Русский' }
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => changeLanguage(lang.code)}
+                        className={`w-full px-4 py-2.5 text-[10px] font-black uppercase text-left flex items-center justify-between transition-all group ${
+                          i18n.language.startsWith(lang.code) 
+                            ? 'bg-black text-white' 
+                            : 'bg-white text-black hover:bg-[#7a1b1b] hover:text-white'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span>{lang.label}</span>
+                        </span>
+                        {i18n.language.startsWith(lang.code) && (
+                          <div className="w-1.5 h-1.5 bg-[#7a1b1b] rounded-full" />
+                        )}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             {user?.email?.toLowerCase() === 'ologast@gmail.com' && (
               <button 
                 onClick={() => setIsAdminDashboardOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-black text-white text-[10px] font-black uppercase hover:bg-gray-800 transition-all border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px]"
+                className="flex items-center gap-2 px-3 py-1.5 bg-black text-white text-[10px] font-black uppercase hover:bg-gray-800 transition-all border-2 border-black active:translate-x-[2px] active:translate-y-[2px]"
               >
                 <Users size={14} />
                 Запросы
               </button>
             )}
-            <button onClick={() => setIsAddModalOpen(true)} className="bg-red-600 text-white border-2 border-black px-4 py-1.5 text-[10px] font-black uppercase tracking-widest hover:bg-[#7a1b1b] transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[inset_0_0_0_2px_#000] active:translate-x-[2px] active:translate-y-[2px]">
+            <button onClick={() => setIsAddModalOpen(true)} className="bg-red-600 text-white border-2 border-black px-4 py-1.5 text-[10px] font-black uppercase tracking-widest hover:bg-[#7a1b1b] transition-all active:translate-x-[2px] active:translate-y-[2px]">
               {t('add_listing')}
             </button>
             {user ? (
               <div className="flex items-center gap-3">
                 <div className="flex flex-col items-end">
                   <span className="text-[10px] font-black uppercase leading-none">{user.displayName}</span>
-                  <button onClick={handleLogout} className="text-[8px] font-bold uppercase underline opacity-50 hover:text-[#dc2626] hover:opacity-100 px-1 transition-all">{t('logout')}</button>
+                  <button onClick={handleLogout} className="text-[8px] font-bold uppercase underline opacity-50 hover:text-[#7a1b1b] hover:opacity-100 px-1 transition-all">{t('logout')}</button>
                 </div>
                 <img src={user.photoURL || ''} alt="User" className="w-8 h-8 border-2 border-black" />
               </div>
             ) : (
-              <button onClick={() => setIsLoginModalOpen(true)} className="bg-white text-black border-2 border-black px-4 py-1.5 text-[10px] font-black uppercase tracking-widest hover:text-[#dc2626] hover:border-[#dc2626] transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[inset_0_0_0_2px_#000] active:translate-x-[2px] active:translate-y-[2px]">
+              <button onClick={() => setIsLoginModalOpen(true)} className="bg-white text-black border-2 border-black px-4 py-1.5 text-[10px] font-black uppercase tracking-widest hover:text-[#7a1b1b] hover:border-[#7a1b1b] transition-all active:translate-x-[2px] active:translate-y-[2px]">
                 {t('login_email')}
               </button>
             )}
           </div>
-        </div>
       </header>
 
       {/* Categories Bar */}
@@ -655,12 +746,12 @@ export default function App() {
                   setHouseFilter('');
                 }
                 if (!isVoting) setViewMode('list');
-                navigate('/');
+                navigate(`/${i18n.language}/`);
               }}
               className={`flex items-center gap-2 whitespace-nowrap transition-all ${
                 isActive 
-                  ? 'text-[#dc2626] scale-105 opacity-100' 
-                  : 'text-black opacity-60 hover:text-[#dc2626] hover:opacity-100'
+                  ? 'text-[#7a1b1b] scale-105 opacity-100' 
+                  : 'text-black opacity-60 hover:text-[#7a1b1b] hover:opacity-100'
               } text-[12px]`}
             >
               <cat.icon size={16} />
@@ -680,7 +771,8 @@ export default function App() {
           {/* Sub-header / Filters */}
           {selectedCategory !== 'Голосование' && (
         <div className="px-4 py-1.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 bg-paper-light border-b-2 border-black">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
+            <label className="text-[10px] font-black uppercase opacity-60">{t('filters', 'Фильтр')}</label>
             <div className="flex flex-col gap-0.5">
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-2 border border-black p-1 bg-white">
@@ -717,8 +809,8 @@ export default function App() {
                 onClick={() => setSellerTypeFilters([])}
                 className={`px-3 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                   sellerTypeFilters.length === 0 
-                    ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                    : 'bg-white text-black hover:text-[#dc2626]'
+                    ? 'bg-[#7a1b1b] text-white' 
+                    : 'bg-white text-black hover:text-[#7a1b1b]'
                 }`}
               >
                 {t('all', 'Все')}
@@ -743,8 +835,8 @@ export default function App() {
                     }}
                     className={`px-3 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                       isSelected 
-                        ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                        : 'bg-white text-black hover:text-[#dc2626]'
+                        ? 'bg-[#7a1b1b] text-white' 
+                        : 'bg-white text-black hover:text-[#7a1b1b]'
                     }`}
                   >
                     {t(typeMap[type] || type)}
@@ -769,8 +861,8 @@ export default function App() {
                   onClick={() => setTransactionTypeFilter(type as any)}
                   className={`px-3 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                     transactionTypeFilter === type 
-                      ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                      : 'bg-white text-black hover:text-[#dc2626]'
+                      ? 'bg-[#7a1b1b] text-white' 
+                      : 'bg-white text-black hover:text-[#7a1b1b]'
                   }`}
                 >
                   {t(typeMap[type] || type)}
@@ -787,8 +879,8 @@ export default function App() {
                 onClick={() => setSelectedSubCategories([])}
                 className={`px-3 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                   selectedSubCategories.length === 0 
-                    ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                    : 'bg-white text-black hover:text-[#dc2626]'
+                    ? 'bg-[#7a1b1b] text-white' 
+                    : 'bg-white text-black hover:text-[#7a1b1b]'
                 }`}
               >
                 {t('all', 'Все')}
@@ -808,8 +900,8 @@ export default function App() {
                     onClick={() => toggleSubCategory(type)}
                     className={`px-3 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                       isChecked 
-                        ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                        : 'bg-white text-black hover:text-[#dc2626]'
+                        ? 'bg-[#7a1b1b] text-white' 
+                        : 'bg-white text-black hover:text-[#7a1b1b]'
                     }`}
                   >
                     {t(typeMap[type] || type)}
@@ -826,8 +918,8 @@ export default function App() {
                 onClick={() => setDispoziceFilters([])}
                 className={`px-2 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                   dispoziceFilters.length === 0 
-                    ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                    : 'bg-white text-black hover:text-[#dc2626]'
+                    ? 'bg-[#7a1b1b] text-white' 
+                    : 'bg-white text-black hover:text-[#7a1b1b]'
                 }`}
               >
                 {t('all', 'Все')}
@@ -846,8 +938,8 @@ export default function App() {
                     }}
                     className={`px-2 py-1 text-[10px] font-black uppercase transition-all border border-black ${
                       isSelected 
-                        ? 'bg-[#dc2626] text-white shadow-[inset_0_0_0_2px_#000]' 
-                        : 'bg-white text-black hover:text-[#dc2626]'
+                        ? 'bg-[#7a1b1b] text-white' 
+                        : 'bg-white text-black hover:text-[#7a1b1b]'
                     }`}
                   >
                     {type}
@@ -924,7 +1016,7 @@ export default function App() {
                 setSortBy('newest');
                 setDispoziceFilters([]);
               }}
-              className="w-full px-3 py-1 text-[10px] font-black uppercase transition-all border border-black bg-black text-white hover:bg-[#dc2626]"
+              className="w-full px-3 py-1 text-[10px] font-black uppercase transition-all border border-black bg-black text-white hover:bg-[#7a1b1b]"
             >
               {t('reset_all', 'Сбросить все')}
             </button>
@@ -1001,7 +1093,7 @@ export default function App() {
                     })}
                   </div>
                 ) : (
-                  <div className="aspect-video w-full bg-[#e5e7eb] border-4 border-black relative overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-0">
+                  <div className="aspect-video w-full bg-[#e5e7eb] border-4 border-black relative overflow-hidden z-0">
                     <MapContainer
                       key={viewMode}
                       center={[55.7558, 37.6173]} // Default to Moscow or somewhere
@@ -1041,7 +1133,7 @@ export default function App() {
                                 <p className="text-xs font-black mt-1">
                                   {formatPrice(listing.price, listing.transactionType === 'Аренда' ? t('kc_month', 'Kč/мес') : 'Kč')}
                                   {(listing.dispozice || listing.area) && (
-                                    <span className="ml-2 text-[8px] font-black text-[#dc2626]">
+                                    <span className="ml-2 text-[8px] font-black text-[#7a1b1b]">
                                       {listing.dispozice}{listing.dispozice && listing.area ? ' / ' : ''}{listing.area ? `${listing.area} ${t('sqm', 'м²')}` : ''}
                                     </span>
                                   )}
@@ -1066,7 +1158,7 @@ export default function App() {
                       })}
                     </MapContainer>
 
-                    <div className="absolute top-6 left-6 bg-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-30 max-w-[220px]">
+                    <div className="absolute top-6 left-6 bg-white border-2 border-black p-4 z-30 max-w-[220px]">
                       <h3 className="text-xs font-black uppercase mb-3 border-b border-black pb-1">{t('archive_legend', 'Легенда архива')}</h3>
                       <div className="space-y-2">
                         <div className="flex items-center gap-3">
@@ -1092,13 +1184,13 @@ export default function App() {
                     <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-[400]">
                       <button 
                         onClick={() => setZoom(z => Math.min(z + 1, 20))}
-                        className="w-10 h-10 bg-white border-2 border-black flex items-center justify-center font-black text-xl btn-newspaper-hover shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                        className="w-10 h-10 bg-white border-2 border-black flex items-center justify-center font-black text-xl btn-newspaper-hover active:translate-x-0.5 active:translate-y-0.5"
                       >
                         +
                       </button>
                       <button 
                         onClick={() => setZoom(z => Math.max(z - 1, 1))}
-                        className="w-10 h-10 bg-white border-2 border-black flex items-center justify-center font-black text-xl btn-newspaper-hover shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                        className="w-10 h-10 bg-white border-2 border-black flex items-center justify-center font-black text-xl btn-newspaper-hover active:translate-x-0.5 active:translate-y-0.5"
                       >
                         -
                       </button>
@@ -1106,7 +1198,7 @@ export default function App() {
                         href="https://www.openstreetmap.org"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 bg-white border-2 border-black flex items-center justify-center font-black text-xl btn-newspaper-hover shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                        className="w-10 h-10 bg-white border-2 border-black flex items-center justify-center font-black text-xl btn-newspaper-hover active:translate-x-0.5 active:translate-y-0.5"
                         title={t('open_in_osm', 'Открыть в OpenStreetMap')}
                       >
                         <Globe size={20} />
@@ -1133,20 +1225,20 @@ export default function App() {
             </div>
             <div className="flex gap-6">
               <Link 
-                to="/privacy"
-                className="text-[10px] font-bold uppercase hover:text-[#dc2626] transition-all"
+                to={`/${i18n.language}/privacy`}
+                className="text-[10px] font-bold uppercase hover:text-[#7a1b1b] transition-all"
               >
                 {t('privacy_policy', 'Политика конфиденциальности')}
               </Link>
               <Link 
-                to="/terms"
-                className="text-[10px] font-bold uppercase hover:text-[#dc2626] transition-all"
+                to={`/${i18n.language}/terms`}
+                className="text-[10px] font-bold uppercase hover:text-[#7a1b1b] transition-all"
               >
                 {t('terms_of_use', 'Условия использования')}
               </Link>
               <Link 
-                to="/contacts"
-                className="text-[10px] font-bold uppercase hover:text-[#dc2626] transition-all"
+                to={`/${i18n.language}/contacts`}
+                className="text-[10px] font-bold uppercase hover:text-[#7a1b1b] transition-all"
               >
                 {t('contacts', 'Контакты')}
               </Link>
@@ -1359,7 +1451,7 @@ export default function App() {
             <button 
               type="submit"
               disabled={isAuthLoading}
-              className="w-full flex items-center justify-center gap-3 bg-[#7a1b1b] text-white border-2 border-black p-3 transition-all hover:bg-red-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 bg-[#7a1b1b] text-white border-2 border-black p-3 transition-all hover:bg-red-700 active:translate-x-1 active:translate-y-1 disabled:opacity-50"
             >
               <span className="text-xs font-black uppercase tracking-widest">
                 {isAuthLoading ? t('loading', 'Загрузка...') : (isRegistering ? t('register', 'Зарегистрироваться') : t('login', 'Войти'))}
@@ -1376,7 +1468,7 @@ export default function App() {
           <button 
             onClick={handleGoogleLogin}
             disabled={isAuthLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white border-2 border-black p-3 btn-newspaper-hover transition-all group shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 bg-white border-2 border-black p-3 btn-newspaper-hover transition-all group active:translate-x-1 active:translate-y-1 disabled:opacity-50"
           >
             <LogIn size={20} />
             <span className="text-xs font-black uppercase tracking-widest">{t('login_google', 'Войти через Google')}</span>
@@ -1406,7 +1498,7 @@ export default function App() {
             <button 
               onClick={handlePrevListing}
               disabled={!hasPrevListing}
-              className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${!hasPrevListing ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] ${!hasPrevListing ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
             >
               <ChevronLeft size={14} />
               {t('back', 'Назад')}
@@ -1414,7 +1506,7 @@ export default function App() {
             <button 
               onClick={handleNextListing}
               disabled={!hasNextListing}
-              className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${!hasNextListing ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[9px] font-black uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] ${!hasNextListing ? 'opacity-30 cursor-not-allowed bg-gray-100' : 'bg-white hover:bg-black hover:text-white'}`}
             >
               {t('forward', 'Вперед')}
               <ChevronRight size={14} />
@@ -1489,7 +1581,7 @@ export default function App() {
               </div>
               <button 
                 onClick={() => toggleComparison(listing.id)}
-                className="w-full py-2 bg-red-600 text-white text-[10px] font-black uppercase btn-newspaper-hover"
+                className="w-full py-2 bg-[#7a1b1b] text-white text-[10px] font-black uppercase btn-newspaper-hover"
               >
                 {t('remove', 'Удалить')}
               </button>
@@ -1512,7 +1604,7 @@ export default function App() {
 
       {/* Comparison Floating Bar */}
       {(comparisons || []).length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-black text-white px-6 py-3 border-2 border-white shadow-2xl flex items-center gap-6">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-black text-white px-6 py-3 border-2 border-white flex items-center gap-6">
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-widest">{t('comparison_title', 'Сравнение')}</span>
             <span className="text-[8px] font-bold opacity-60 uppercase">{(comparisons || []).length} {t('objects_count', 'объекта(ов)')}</span>

@@ -10,7 +10,7 @@ export const PrivacyPolicy: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="max-w-4xl mx-auto p-6 bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] my-8"
+      className="max-w-4xl mx-auto p-6 bg-white border-2 border-black my-8"
     >
       <div className="flex items-center justify-between mb-8 border-b-2 border-black pb-4">
         <div className="flex items-center gap-3">
@@ -19,7 +19,7 @@ export const PrivacyPolicy: React.FC = () => {
         </div>
         <button 
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 px-4 py-2 border-2 border-black font-bold uppercase text-xs hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1"
+          className="flex items-center gap-2 px-4 py-2 border-2 border-black font-bold uppercase text-xs hover:bg-black hover:text-white transition-all active:translate-x-1 active:translate-y-1"
         >
           <ArrowLeft size={16} />
           Назад

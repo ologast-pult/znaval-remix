@@ -256,7 +256,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSub
                   </button>
                 </div>
               ) : (
-                <label className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] active:shadow-none active:translate-x-1 active:translate-y-1">
+                <label className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all active:translate-x-1 active:translate-y-1">
                   <Upload size={14} />
                   {t('upload_contract', 'Загрузить договор')}
                   <input type="file" accept=".pdf,image/*" onChange={handleContractChange} className="hidden" />
@@ -289,7 +289,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSub
         <button 
           onClick={handleSubmit} 
           disabled={isUploading}
-          className={`w-full py-4 font-black uppercase tracking-widest text-sm transition-all border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-none ${isUploading ? 'bg-gray-200 cursor-not-allowed' : 'bg-red-600 text-white hover:bg-[#7a1b1b]'}`}
+          className={`w-full py-4 font-black uppercase tracking-widest text-sm transition-all border-2 border-black active:translate-x-1 active:translate-y-1 ${isUploading ? 'bg-gray-200 cursor-not-allowed' : 'bg-red-600 text-white hover:bg-[#7a1b1b]'}`}
         >
           {isUploading ? t('uploading', 'Загрузка...') : initialReview ? t('save_changes', 'Сохранить изменения') : t('publish', 'Опубликовать')}
         </button>
