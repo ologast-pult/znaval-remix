@@ -60,9 +60,22 @@ const znavalIcon = new L.DivIcon({
 import { useTranslation } from 'react-i18next';
 
 import { useFirebase } from './components/FirebaseProvider';
-import { auth, db, handleFirestoreError, OperationType } from './firebase';
+import { auth, db, handleFirestoreError, OperationType, addProperty, getProperties } from './lib/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { doc, setDoc, getDoc, getDocFromServer, collection, getDocs, writeBatch } from 'firebase/firestore';
+
+/**
+ * Example Usage of Firebase helpers from src/lib/firebase.ts:
+ * 
+ * const handleAddProperty = async () => {
+ *   try {
+ *     const docRef = await addProperty({ title: 'New Property', price: 1000000 });
+ *     console.log('Property added with ID:', docRef.id);
+ *   } catch (error) {
+ *     console.error('Failed to add property');
+ *   }
+ * };
+ */
 
 import { Routes, Route, Link, useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
@@ -224,6 +237,12 @@ function AppContent() {
   // Data initialization
   useEffect(() => {
     const fetchData = async () => {
+      if (!db) {
+        const { MOCK_LISTINGS, MOCK_POLLS } = await import('./constants');
+        setListings(MOCK_LISTINGS);
+        setPolls(MOCK_POLLS);
+        return;
+      }
       try {
         const listingsSnapshot = await getDocs(collection(db, 'listings'));
         const pollsSnapshot = await getDocs(collection(db, 'polls'));
@@ -256,8 +275,8 @@ function AppContent() {
   }, []);
 
   const syncDataToFirestore = async () => {
-    if (!user || user.email?.toLowerCase() !== 'ologast@gmail.com') {
-      addToast('Доступ запрещен', 'error');
+    if (!db || !user || user.email?.toLowerCase() !== 'ologast@gmail.com') {
+      addToast(db ? 'Доступ запрещен' : 'Firebase не инициализирован', 'error');
       return;
     }
 
@@ -294,6 +313,7 @@ function AppContent() {
   // Test connection to Firestore
   useEffect(() => {
     async function testConnection() {
+      if (!db) return;
       const path = 'test/connection';
       try {
         await getDocFromServer(doc(db, path));

@@ -1,52 +1,32 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
+    
+    // Helper to check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
 
-    function isAdmin() {
-      return isAuthenticated() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-         request.auth.token.email == "Ologast@gmail.com");
-    }
-
-    // User profiles
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isAdmin();
-    }
-
-    // Listings
-    match /listings/{listingId} {
+    // Properties collection
+    match /properties/{propertyId} {
+      // Read can be public
       allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.authorUid == request.auth.uid);
+      // Only authenticated users can write
+      allow write: if isAuthenticated();
     }
 
-    // Polls
-    match /polls/{pollId} {
+    // Property translations collection
+    match /property_translations/{translationId} {
+      // Read can be public
       allow read: if true;
-      allow create: if isAdmin();
-      allow update, delete: if isAdmin();
+      // Only authenticated users can write
+      allow write: if isAuthenticated();
     }
 
-    // Reviews
-    match /reviews/{reviewId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.authorUid == request.auth.uid);
-    }
-    
-    // Test connection
-    match /test/connection {
-      allow read: if true;
+    // Default deny for everything else
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
