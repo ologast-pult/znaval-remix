@@ -5,36 +5,23 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
-/**
- * Firebase configuration using environment variables.
- * These must be prefixed with VITE_ to be accessible in the client-side code.
- */
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
+import firebaseConfig from '../../firebase-applet-config.json';
 
+/**
+ * Firebase initialization
+ */
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let db: Firestore | undefined;
 
-const isConfigValid = !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
-
-if (isConfigValid) {
-  try {
-    // Initialize Firebase ONLY ONCE
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    auth = getAuth(app);
-    db = getFirestore(app);
-  } catch (error) {
-    console.error('Firebase initialization failed:', error);
-  }
-} else {
-  console.warn('Firebase configuration is missing or incomplete. Check VITE_FIREBASE_* environment variables.');
+try {
+  // Initialize Firebase ONLY ONCE
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+  // Use firestoreDatabaseId from config if available
+  db = getFirestore(app, (firebaseConfig as any).firestoreDatabaseId);
+} catch (error) {
+  console.error('Firebase initialization failed:', error);
 }
 
 export const rtdb = app ? getDatabase(app) : null;

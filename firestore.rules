@@ -2,31 +2,84 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper to check if user is authenticated
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-
-    // Properties collection
-    match /properties/{propertyId} {
-      // Read can be public
-      allow read: if true;
-      // Only authenticated users can write
-      allow write: if isAuthenticated();
-    }
-
-    // Property translations collection
-    match /property_translations/{translationId} {
-      // Read can be public
-      allow read: if true;
-      // Only authenticated users can write
-      allow write: if isAuthenticated();
-    }
-
-    // Default deny for everything else
+    // 0. Global Safety Net
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    // --- Helper Functions ---
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    
+    // Admin check: Using a collection of admins or bootstrapped admin email.
+    function isAdmin() { 
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'Ologast@gmail.com' && request.auth.token.email_verified == true)
+      ); 
+    }
+
+    // --- Validation Blueprints ---
+    
+    function isValidListing(data) {
+      return data.keys().hasAll(['id', 'title', 'price', 'authorUid', 'createdAt']) &&
+             data.id is string && isValidId(data.id) &&
+             data.title is string && data.title.size() <= 200 &&
+             data.price is number && data.price >= 0 &&
+             data.authorUid == request.auth.uid &&
+             data.createdAt is string;
+    }
+
+    function isValidPoll(data) {
+      return data.keys().hasAll(['id', 'question', 'options', 'createdAt']) &&
+             data.id is string && isValidId(data.id) &&
+             data.question is string && data.question.size() <= 500 &&
+             data.options is list && data.options.size() > 0 && data.options.size() <= 10 &&
+             data.createdAt is string;
+    }
+
+    // --- Collection Matches ---
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && incoming().keys().hasOnly(['uid', 'email', 'displayName', 'role', 'createdAt']) && incoming().role == 'user';
+      allow update: if isOwner(userId) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoUrl'])
+      ) || isAdmin();
+    }
+
+    // Listings collection
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidListing(incoming()) && listingId == incoming().id;
+      allow update: if (isOwner(existing().authorUid) || isAdmin()) && 
+                    isValidListing(incoming()) &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['title', 'price', 'city', 'country', 'address', 'updatedAt']);
+      allow delete: if isOwner(existing().authorUid) || isAdmin();
+    }
+
+    // Polls collection
+    match /polls/{pollId} {
+      allow read: if true;
+      allow create: if isAdmin();
+      allow update: if (isSignedIn() && (
+        // Action: Vote
+        incoming().diff(existing()).affectedKeys().hasOnly(['votes']) &&
+        incoming().votes.keys().hasAll(existing().votes.keys()) &&
+        incoming().votes[request.auth.uid] is string
+      )) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // legacy properties
+    match /properties/{propertyId} {
+        allow read: if true;
+        allow write: if isSignedIn();
     }
   }
 }
