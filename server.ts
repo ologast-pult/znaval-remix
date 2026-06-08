@@ -19,7 +19,7 @@ async function startServer() {
   app.post("/api/verify-recaptcha", async (req, res) => {
     const { token, action } = req.body;
     const siteKey = "6LcH6xMtAAAAABD8J8v3JBCiSnIwSQ3A5D0I-XYq";
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6LcH6xMtAAAAAK6AYMmsUItIe6-5apxnqLQBHhhH";
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     const apiKey = process.env.RECAPTCHA_API_KEY;
     const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID || "gen-lang-client-0953909883";
 
