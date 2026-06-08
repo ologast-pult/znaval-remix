@@ -60,9 +60,10 @@ const znavalIcon = new L.DivIcon({
 import { useTranslation } from 'react-i18next';
 
 import { useFirebase } from './components/FirebaseProvider';
-import { auth, db, handleFirestoreError, OperationType, addProperty, getProperties } from './lib/firebase';
+import { auth, db, storage, handleFirestoreError, OperationType, addProperty, getProperties } from './lib/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { doc, setDoc, getDoc, getDocFromServer, collection, getDocs, writeBatch } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocFromServer, collection, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 /**
  * Example Usage of Firebase helpers from src/lib/firebase.ts:
@@ -234,6 +235,30 @@ function AppContent() {
 
   // Auth Listener removed
 
+  const computePollVotes = (poll: any): Poll => {
+    if (!poll.votes) return poll as Poll;
+    const votesMap = poll.votes as Record<string, string>;
+    const additionalVotes: Record<string, number> = {};
+    
+    Object.values(votesMap).forEach((optionId) => {
+      additionalVotes[optionId] = (additionalVotes[optionId] || 0) + 1;
+    });
+
+    const baseOptions = poll.options || [];
+    const updatedOptions = baseOptions.map((opt: any) => ({
+      ...opt,
+      votes: (opt.votes || 0) + (additionalVotes[opt.id] || 0)
+    }));
+
+    const totalVotes = updatedOptions.reduce((sum: number, opt: any) => sum + opt.votes, 0);
+
+    return {
+      ...poll,
+      options: updatedOptions,
+      totalVotes: totalVotes
+    } as Poll;
+  };
+
   // Data initialization
   useEffect(() => {
     const fetchData = async () => {
@@ -255,7 +280,10 @@ function AppContent() {
         }
 
         if (!pollsSnapshot.empty) {
-          setPolls(pollsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Poll)));
+          setPolls(pollsSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return computePollVotes({ id: doc.id, ...data });
+          }));
         } else {
           const { MOCK_POLLS } = await import('./constants');
           setPolls(MOCK_POLLS);
@@ -302,7 +330,10 @@ function AppContent() {
       const listingsSnapshot = await getDocs(collection(db, 'listings'));
       const pollsSnapshot = await getDocs(collection(db, 'polls'));
       setListings(listingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Listing)));
-      setPolls(pollsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Poll)));
+      setPolls(pollsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return computePollVotes({ id: doc.id, ...data });
+      }));
     } catch (error: any) {
       addToast(`Ошибка синхронизации: ${error.message}`, 'error');
     } finally {
@@ -557,11 +588,157 @@ function AppContent() {
 
   const handleAddListing = async (e: React.FormEvent) => {
     e.preventDefault();
-    addToast('Функциональность добавления объектов временно отключена (Firebase удален)', 'error');
+    if (!db) {
+      addToast('Firebase не инициализирован', 'error');
+      return;
+    }
+    if (!user) {
+      addToast('Войдите, чтобы добавить объект', 'error');
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    setIsAddingListing(true);
+    try {
+      const formEl = e.currentTarget as HTMLFormElement;
+      const formData = new FormData(formEl);
+      
+      const title = formData.get('title') as string;
+      const category = formData.get('category') as string;
+      const transactionType = formData.get('transactionType') as string;
+      const dispozice = formData.get('dispozice') as string || '';
+      const area = Number(formData.get('area') || '0');
+      const price = Number(formData.get('price'));
+      const sellerType = formData.get('sellerType') as string;
+      const stayDuration = formData.get('stayDuration') as string || '';
+      const commission = Number(formData.get('commission') || '0');
+      const floor = Number(formData.get('floor') || '0');
+      const totalFloors = Number(formData.get('totalFloors') || '0');
+      
+      const propertyTypeSelect = formData.get('propertyType') as string;
+      const propertyTypeCustom = formData.get('propertyTypeCustom') as string;
+      const propertyType = propertyTypeSelect === 'custom' ? propertyTypeCustom : propertyTypeSelect;
+
+      const materialSelect = formData.get('material') as string;
+      const materialCustom = formData.get('materialCustom') as string;
+      const material = materialSelect === 'custom' ? materialCustom : materialSelect;
+
+      const landTypeSelect = formData.get('landType') as string;
+      const landTypeCustom = formData.get('landTypeCustom') as string;
+      const landType = landTypeSelect === 'custom' ? landTypeCustom : landTypeSelect;
+
+      const description = formData.get('description') as string;
+      const cadastreUrl = formData.get('cadastreUrl') as string || '';
+      const address = formData.get('address') as string;
+      const lat = formData.get('lat') ? Number(formData.get('lat')) : 50.0755;
+      const lng = formData.get('lng') ? Number(formData.get('lng')) : 14.4378;
+
+      const listingId = `list-${Date.now()}`;
+
+      let imageUrl = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=800';
+      const imageFile = formData.get('imageFile') as File;
+      if (imageFile && imageFile.size > 0) {
+        try {
+          if (storage) {
+            const storageRef = ref(storage, `listings/${listingId}/main`);
+            await uploadBytes(storageRef, imageFile);
+            imageUrl = await getDownloadURL(storageRef);
+          }
+        } catch (storageError) {
+          console.warn("Storage upload failed, falling back to random placeholder image:", storageError);
+          imageUrl = `https://images.unsplash.com/photo-${1564013799919 + Math.floor(Math.random() * 10000)}-ab600027ffc6?auto=format&fit=crop&q=80&w=800`;
+        }
+      }
+
+      const cleanListingPayload = {
+        id: listingId,
+        title,
+        category,
+        transactionType,
+        dispozice,
+        area,
+        price,
+        sellerType,
+        stayDuration,
+        commission,
+        floor,
+        totalFloors,
+        propertyType,
+        material,
+        landType,
+        description,
+        cadastreUrl,
+        address,
+        coordinates: { lat, lng },
+        imageUrl,
+        verified: false,
+        trustScore: 50,
+        rating: 0,
+        reviewsCount: 0,
+        proofs: [],
+        reviews: [],
+        authorUid: user.uid,
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, 'listings', listingId), cleanListingPayload);
+      
+      addToast('Объект успешно добавлен в цифровой архив!');
+      setIsAddModalOpen(false);
+      formEl.reset();
+      
+      // Refresh listings state
+      const listingsSnapshot = await getDocs(collection(db, 'listings'));
+      if (!listingsSnapshot.empty) {
+        setListings(listingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Listing)));
+      }
+    } catch (error: any) {
+      addToast(`Ошибка сохранения: ${error.message}`, 'error');
+      try {
+        handleFirestoreError(error, OperationType.WRITE, `listings`);
+      } catch (err) {
+        // Logged already
+      }
+    } finally {
+      setIsAddingListing(false);
+    }
   };
 
   const handleVote = async (pollId: string, optionId: string) => {
-    addToast('Функциональность голосования временно отключена (Firebase удален)', 'error');
+    if (!db) {
+      addToast('Firebase не инициализирован', 'error');
+      return;
+    }
+    if (!user) {
+      addToast('Войдите, чтобы проголосовать', 'error');
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    try {
+      const pollRef = doc(db, 'polls', pollId);
+      await updateDoc(pollRef, {
+        [`votes.${user.uid}`]: optionId
+      });
+
+      addToast('Ваш голос успешно учтен!');
+
+      // Refresh polls state from Firestore
+      const pollsSnapshot = await getDocs(collection(db, 'polls'));
+      if (!pollsSnapshot.empty) {
+        setPolls(pollsSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return computePollVotes({ id: doc.id, ...data });
+        }));
+      }
+    } catch (error: any) {
+      addToast('Ошибка при голосовании: Недостаточно прав.', 'error');
+      try {
+        handleFirestoreError(error, OperationType.UPDATE, `polls/${pollId}`);
+      } catch (err) {
+        // Safe catch-and-throw if needed, or already printed to console
+      }
+    }
   };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
