@@ -18,7 +18,7 @@ async function startServer() {
   // API Route for reCAPTCHA verification
   app.post("/api/verify-recaptcha", async (req, res) => {
     const { token, action } = req.body;
-    const siteKey = "6LcDg5ksAAAAALw2m4UgX_WgN24UysR3cl4djG_K";
+    const siteKey = "6Lf-4hItAAAAAGN1eNxXOJSaAhKSftCrE41Q0oy8";
     const apiKey = process.env.RECAPTCHA_API_KEY;
     const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID || "gen-lang-client-0953909883";
 

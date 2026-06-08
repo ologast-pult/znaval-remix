@@ -336,7 +336,7 @@ function AppContent() {
       }
       (window as any).grecaptcha.enterprise.ready(async () => {
         try {
-          const token = await (window as any).grecaptcha.enterprise.execute('6LcDg5ksAAAAALw2m4UgX_WgN24UysR3cl4djG_K', { action });
+          const token = await (window as any).grecaptcha.enterprise.execute('6Lf-4hItAAAAAGN1eNxXOJSaAhKSftCrE41Q0oy8', { action });
           
           // Verify token with backend
           const response = await fetch('/api/verify-recaptcha', {
