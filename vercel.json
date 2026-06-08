@@ -7,7 +7,7 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/((?!api|assets|favicon.svg|grecaptcha).*)$",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

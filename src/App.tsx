@@ -360,14 +360,20 @@ function AppContent() {
 
   const executeRecaptcha = (action: string): Promise<boolean> => {
     return new Promise((resolve) => {
-      if (!(window as any).grecaptcha?.enterprise) {
+      const grecaptcha = (window as any).grecaptcha;
+      if (!grecaptcha) {
         console.warn('reCAPTCHA not loaded yet');
         resolve(true); // Allow for now if not loaded
         return;
       }
-      (window as any).grecaptcha.enterprise.ready(async () => {
+      
+      const isEnterprise = !!grecaptcha.enterprise;
+      const recaptchaInstance = isEnterprise ? grecaptcha.enterprise : grecaptcha;
+      const siteKey = '6LcH6xMtAAAAABD8J8v3JBCiSnIwSQ3A5D0I-XYq';
+
+      recaptchaInstance.ready(async () => {
         try {
-          const token = await (window as any).grecaptcha.enterprise.execute('6Lf-4hItAAAAAGN1eNxXOJSaAhKSftCrE41Q0oy8', { action });
+          const token = await recaptchaInstance.execute(siteKey, { action });
           
           // Verify token with backend
           const response = await fetch('/api/verify-recaptcha', {
@@ -379,8 +385,8 @@ function AppContent() {
           const result = await response.json();
           console.log('reCAPTCHA verification result:', result);
           
-          // In a real app, you'd check the score (e.g., > 0.5)
-          const score = result.riskAnalysis?.score ?? 1.0;
+          // Support both assessment score (Enterprise) and siteverify score/success (standard v3)
+          const score = result.riskAnalysis?.score ?? result.score ?? (result.success === false ? 0.0 : 1.0);
           if (score < 0.3) {
             addToast('Подозрительная активность. Пожалуйста, попробуйте позже.', 'error');
             resolve(false);
