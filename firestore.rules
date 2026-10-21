@@ -1,0 +1,123 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helper Functions ---
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    
+    // Admin check: Using a collection of admins or bootstrapped admin email.
+    function isAdmin() { 
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        ((request.auth.token.email == 'Ologast@gmail.com' || request.auth.token.email == 'ologast@gmail.com') && request.auth.token.email_verified == true)
+      ); 
+    }
+
+    // --- Validation Blueprints ---
+    
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role', 'createdAt']) &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.email is string && data.email.size() <= 128 &&
+             data.role in ['user', 'admin'] &&
+             data.createdAt is string && data.createdAt.size() <= 40 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 150)) &&
+             (!('photoUrl' in data) || (data.photoUrl is string && data.photoUrl.size() <= 2048)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 2048));
+    }
+
+    function isValidListing(data) {
+      return data.keys().hasAll(['id', 'title', 'price', 'authorUid', 'createdAt']) &&
+             data.id is string && isValidId(data.id) &&
+             data.title is string && data.title.size() <= 200 &&
+             data.price is number && data.price >= 0 &&
+             data.authorUid == request.auth.uid &&
+             data.createdAt is string && data.createdAt.size() <= 30;
+    }
+
+    // Zero-trust initialization validator for new objects
+    function isNewListingSecure(data) {
+      return isValidListing(data) &&
+             data.verified == false &&
+             data.trustScore == 50 &&
+             data.rating == 0 &&
+             data.reviewsCount == 0 &&
+             data.proofs.size() == 0 &&
+             data.reviews.size() == 0;
+    }
+
+    function isValidPoll(data) {
+      return data.keys().hasAll(['id', 'question', 'options', 'createdAt']) &&
+             data.id is string && isValidId(data.id) &&
+             data.question is string && data.question.size() <= 500 &&
+             data.options is list && data.options.size() > 0 && data.options.size() <= 10 &&
+             data.createdAt is string && data.createdAt.size() <= 30;
+    }
+
+    // --- Collection Matches ---
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && (incoming().role == 'user' || isAdmin());
+      allow update: if (isOwner(userId) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoUrl', 'photoURL'])
+      )) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Listings collection
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isNewListingSecure(incoming()) && listingId == incoming().id;
+      allow update: if (isOwner(existing().authorUid) || isAdmin()) && 
+                    isValidListing(incoming()) &&
+                    incoming().diff(existing()).affectedKeys().hasOnly([
+                      'title', 'price', 'city', 'country', 'address', 'updatedAt', 'category', 'description',
+                      'dispozice', 'area', 'sellerType', 'stayDuration', 'commission', 'floor', 'totalFloors',
+                      'propertyType', 'material', 'landType', 'cadastreUrl', 'coordinates', 'imageUrl'
+                    ]);
+      allow delete: if isOwner(existing().authorUid) || isAdmin();
+    }
+
+    // Polls collection
+    match /polls/{pollId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update: if (isSignedIn() && (
+        // Action: Vote (Ensure ONLY the voting field map is changed and only the voter's own key inside votes map is updated)
+        incoming().diff(existing()).affectedKeys().hasOnly(['votes']) &&
+        (
+          (!existing().keys().hasAny(['votes']) &&
+           incoming().votes.keys().hasOnly([request.auth.uid]) &&
+           incoming().votes[request.auth.uid] is string) ||
+          (existing().keys().hasAny(['votes']) &&
+           incoming().votes.keys().hasAll(existing().votes.keys()) &&
+           incoming().votes[request.auth.uid] is string &&
+           incoming().votes.diff(existing().votes).affectedKeys().hasOnly([request.auth.uid]))
+        )
+      )) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Legacy/Properties collection
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow create, update: if isSignedIn() && (
+        incoming().authorUid == request.auth.uid || 
+        !incoming().keys().hasAll(['authorUid'])
+      );
+      allow delete: if isAdmin() || (isSignedIn() && existing().authorUid == request.auth.uid);
+    }
+  }
+}
