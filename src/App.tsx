@@ -1242,19 +1242,19 @@ function AppContent() {
               to={`/${lang}${location.search}`}
               end
               className={({ isActive }) => `p-1.5 flex items-center gap-1 transition-all ${isActive ? 'bg-[#7a1b1b] text-white' : 'text-black hover:text-[#7a1b1b]'}`}
-              title={t('list', 'Список')}
+              title={t('nav_listings', 'Список')}
             >
               <LayoutGrid size={16} />
-              <span className="text-[10px] font-black uppercase hidden md:inline">{t('list', 'Список')}</span>
+              <span className="text-[10px] font-black uppercase hidden md:inline">{t('nav_listings', 'Список')}</span>
             </NavLink>
             <NavLink 
               to={`/${lang}/map${location.search}`}
               end
               className={({ isActive }) => `p-1.5 flex items-center gap-1 transition-all ${isActive ? 'bg-[#7a1b1b] text-white' : 'text-black hover:text-[#7a1b1b]'}`}
-              title={t('map', 'Карта')}
+              title={t('nav_map', 'Карта')}
             >
               <MapIcon size={16} />
-              <span className="text-[10px] font-black uppercase hidden md:inline">{t('map', 'Карта')}</span>
+              <span className="text-[10px] font-black uppercase hidden md:inline">{t('nav_map', 'Карта')}</span>
             </NavLink>
           </div>
 
